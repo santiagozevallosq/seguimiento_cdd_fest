@@ -1,0 +1,12 @@
+en la zona superior del dashboard:
+quisiera que cambies el color negro de la zona superior
+
+en la zona de KPI no lo veo limpio. quisiera que diga:
+-"Monto total programado" y eliminar "presupuesto programado"
+-"Monto total certificado" y eliminar "Monto certificado"
+-"Monto total devengado" y eliminar "Monto devengado"
+-"Requiere reprogramaciones" y eliminar "Requeridas (SI)
+
+cambios: en los gráficos veo que las categorías no se pueden leer bien reduce el tamaño de letra para que se lea completo el texto de cada categoría
+
+he agregado una hoja en el archivo data.xlsx que se llama "diccionario" donde está en nombre completo de las variables, y que puedes utilizarlo para mejorar la visualización. 
