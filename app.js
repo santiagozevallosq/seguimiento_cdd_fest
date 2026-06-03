@@ -8,8 +8,12 @@ let charts = {
     reprogramming: null
 };
 
-// Configuración de la carga inicial del archivo Excel
+// Registrar el plugin de etiquetas de datos para todos los gráficos
+Chart.register(ChartDataLabels);
+
+// Configuración de la carga inicial del archivo Excel y control de acceso
 document.addEventListener("DOMContentLoaded", () => {
+    inicializarLogin();
     inicializarEventos();
     
     // ALTERNATIVA B: Carga automática de "data.xlsx" en la raíz del proyecto
@@ -17,6 +21,44 @@ document.addEventListener("DOMContentLoaded", () => {
     // y elimine la clase 'hidden' del contenedor de estado #no-data-state en index.html
     cargarExcelAutomatico("data.xlsx");
 });
+
+// Función para gestionar la autenticación local (Opción A)
+function inicializarLogin() {
+    const overlay = document.getElementById("login-overlay");
+    const form = document.getElementById("login-form");
+    const errorEl = document.getElementById("login-error");
+    const usernameInput = document.getElementById("login-username");
+    const passwordInput = document.getElementById("login-password");
+
+    // Verificar si ya está autenticado en la sesión actual
+    if (sessionStorage.getItem("authenticated") === "true") {
+        overlay.style.display = "none";
+        return;
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        // Credenciales: dese / dese
+        if (username === "dese" && password === "dese") {
+            sessionStorage.setItem("authenticated", "true");
+            errorEl.classList.add("hidden");
+            
+            // Efecto de fade-out
+            overlay.classList.add("fade-out");
+            setTimeout(() => {
+                overlay.style.display = "none";
+            }, 400);
+        } else {
+            errorEl.classList.remove("hidden");
+            passwordInput.value = "";
+            passwordInput.focus();
+        }
+    });
+}
 
 // Función para inicializar los event listeners de los filtros y el input de archivo
 function inicializarEventos() {
@@ -149,6 +191,16 @@ function limpiarDatos(rawJson) {
                 req_reprogr = "No";
             }
 
+            // 6. Nuevas variables cualitativas
+            let req_reprogr_sustento = (row["req_reprogr_sustento"] || "").toString().trim();
+            if (req_reprogr_sustento.toLowerCase() === "sin especificar") {
+                req_reprogr_sustento = "";
+            }
+            let mma_estado = (row["mma_estado"] || "").toString().trim();
+            if (mma_estado.toLowerCase() === "sin especificar") {
+                mma_estado = "";
+            }
+
             return {
                 n: row["n"],
                 codigo_proyecto: codigo,
@@ -162,7 +214,9 @@ function limpiarDatos(rawJson) {
                 financ_deven: financ_deven,
                 financ_cert_pct: financ_cert_pct,
                 financ_deven_pct: financ_deven_pct,
-                req_reprogr: req_reprogr
+                req_reprogr: req_reprogr,
+                req_reprogr_sustento: req_reprogr_sustento,
+                mma_estado: mma_estado
             };
         });
 }
@@ -381,6 +435,12 @@ function actualizarGraficos() {
     // Agrupamos por CITE para mejor visualización de avance si hay duplicados
     const citeData = agruparPorCite(filteredData);
 
+    // Ajustar altura de los contenedores de los gráficos de barras horizontales según la cantidad de CITEs
+    const dynamicHeight = Math.max(240, citeData.length * 32 + 35);
+    document.getElementById("chart-physical").parentElement.parentElement.style.height = `${dynamicHeight}px`;
+    document.getElementById("chart-certified").parentElement.parentElement.style.height = `${dynamicHeight}px`;
+    document.getElementById("chart-accrued").parentElement.parentElement.style.height = `${dynamicHeight}px`;
+
     // Gráfico 1: % Ejecución Física (Barras Horizontales - Ordenado de mayor a menor)
     const sortedPhysical = [...citeData].sort((a, b) => b.fisica_pct - a.fisica_pct);
     const labelsPhysical = sortedPhysical.map(d => d.cite);
@@ -483,12 +543,16 @@ function actualizarGraficos() {
                     "rgba(180, 138, 39, 1)",
                     "rgba(15, 23, 42, 1)"
                 ],
-                borderWidth: 1.5
+                borderWidth: 1.5,
+                radius: "60%" // Reducir el tamaño del anillo al 60% para dar espacio a etiquetas externas
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: 15
+            },
             plugins: {
                 legend: {
                     position: "bottom",
@@ -505,6 +569,22 @@ function actualizarGraficos() {
                             const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
                             return ` ${context.label}: ${val} (${pct}%)`;
                         }
+                    }
+                },
+                datalabels: {
+                    formatter: function(value, context) {
+                        const total = conteoSí + conteoNo;
+                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                        return value > 0 ? `${value} (${percentage}%)` : "";
+                    },
+                    color: "#000000",
+                    anchor: "end",
+                    align: "outside",
+                    offset: 6,
+                    font: {
+                        family: "Inter",
+                        size: 10,
+                        weight: "bold"
                     }
                 }
             },
@@ -546,6 +626,11 @@ function obtenerConfiguracionGraficoBarras(isHorizontal) {
         indexAxis: isHorizontal ? "y" : "x",
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+            padding: {
+                right: 40 // Espacio para evitar que se recorten las etiquetas de datos al final de las barras
+            }
+        },
         plugins: {
             legend: {
                 display: false
@@ -556,6 +641,19 @@ function obtenerConfiguracionGraficoBarras(isHorizontal) {
                         return ` Avance: ${context.raw.toFixed(1)}%`;
                     }
                 }
+            },
+            datalabels: {
+                anchor: "end",
+                align: "right",
+                formatter: function(value) {
+                    return value.toFixed(1) + "%";
+                },
+                font: {
+                    family: "Inter",
+                    size: 9,
+                    weight: "bold"
+                },
+                color: "#1e293b"
             }
         },
         scales: {
@@ -577,7 +675,8 @@ function obtenerConfiguracionGraficoBarras(isHorizontal) {
                 },
                 ticks: {
                     font: { family: "Inter", size: 8.5 },
-                    color: "#475569"
+                    color: "#475569",
+                    autoSkip: false
                 }
             }
         }
@@ -629,6 +728,8 @@ function actualizarTabla() {
                     ${row.req_reprogr}
                 </span>
             </td>
+            <td>${row.req_reprogr_sustento}</td>
+            <td>${row.mma_estado}</td>
         `;
         
         tableBody.appendChild(tr);

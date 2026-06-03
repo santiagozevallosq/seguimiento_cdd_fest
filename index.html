@@ -17,8 +17,38 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Chart.js para visualización de gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Plugin de etiquetas de datos en Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 </head>
 <body>
+    <!-- Pantalla de Login Overlay (Opción A) -->
+    <div id="login-overlay" class="login-overlay-container">
+        <div class="login-glass-card">
+            <div class="login-header">
+                <img src="logo.jpg" alt="Logo ITP" class="login-logo">
+                <span class="badge">CDD - FEST</span>
+                <h2>Panel de Control de Avances</h2>
+                <p>Introduce las credenciales autorizadas para continuar</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-control">
+                    <label for="login-username">Usuario</label>
+                    <input type="text" id="login-username" placeholder="Ingresa tu usuario" required autocomplete="username">
+                </div>
+                <div class="form-control">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                </div>
+                <div id="login-error" class="login-error hidden">
+                    Credenciales inválidas. Por favor intente de nuevo.
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-login">
+                    Acceder al Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Encabezado Institucional -->
     <header class="app-header">
         <div class="header-content">
@@ -51,8 +81,10 @@
 
     <!-- Contenedor Principal del Dashboard -->
     <main class="dashboard-container">
-        <!-- Panel Lateral de Filtros (Izquierda) -->
-        <aside class="sidebar-filters">
+        <!-- Layout superior: Filtros + KPIs y Gráficos -->
+        <div class="dashboard-top-layout">
+            <!-- Panel Lateral de Filtros (Izquierda) -->
+            <aside class="sidebar-filters">
             <div class="sidebar-header">
                 <h2>Filtros de Control</h2>
                 <p>Ajusta las opciones para filtrar los datos</p>
@@ -239,10 +271,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
+        </div>
 
-            <!-- Tabla de Detalle -->
-            <div class="table-card" id="detail-table-card">
+        <!-- Tabla de Detalle -->
+        <div class="table-card" id="detail-table-card">
                 <div class="table-header">
                     <h2>Detalle de Proyectos</h2>
                     <span class="badge badge-light" id="table-row-count">0 items</span>
@@ -264,6 +297,8 @@
                                 <th class="text-right">Porcentaje de ejecución financiera certificada</th>
                                 <th class="text-right">Porcentaje de ejecución financiera devengada</th>
                                 <th class="text-center">Requiere reprogramación</th>
+                                <th>Motivos de la reprogramación</th>
+                                <th>Estado de las Modificaciones de Menor Alcance</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -272,7 +307,6 @@
                     </table>
                 </div>
             </div>
-        </section>
     </main>
 
     <footer class="app-footer">

@@ -1,0 +1,7 @@
+los gráficos contienen información, pero solo contienen la data de ciertas categorías, no muestran toda la lista completa. como se podría hacer allí? quizás crear un botón de desplazamiento en cada gráfico internamente. o solo colocar todas las categorías y hacer el gráfico más largo. 
+
+lo otro es que seri bueno incorporar el valor asociado a cada barra en los graficos o cuadros, es decir que se vea al costado de las barras, y al costado del gráfico de anillos. 
+
+quiero que la barra de filtros que está a la izquierda solo que se visualice hasta acabando la zona de gráficos, y  que luego la zona de detalle de proyectos ocupe todo el ancho. 
+
+en el archivo "data" estoy incorporando dos variables cualitativas adicionales. y quiero que eso también aparezca en la tabla de detalles de proyecto, al final. 
