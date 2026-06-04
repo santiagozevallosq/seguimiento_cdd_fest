@@ -1,0 +1,13 @@
+El filtro del dashboard, que está en la izquierda tendrá cambios: 1) eliminar código de proyecto, eliminar req reprogramación. solo quedará COTE/UNIDAD TECNICA y PET. Luego quisiera que ya no se ubique en la parte lateral izquierda sino en la parte superior de los KPI de manera horizontal que se vea estético. 
+
+Por otro lado eliminar el KPI CITE AVANCE FISICO >50%
+
+Otro:el KPI de "requiere reprogramación" cambiarlo de posición y que se ubique delante del KPI monto total programado. 
+
+Otro: eliminar el gráfico circular de la zona de gráficos. Luego como quedan solo tres gráficos verticales y hemos cambiado de posición la zona de filtros, lo que quiero es que los tres gráficos se visualicen en una misma fila, respetando que se vean correctamente, ahora que habrá más espacio. 
+
+Otro: en la zona de detalle de proyectos, al final. Ahí eliminar la columna "Motivos de la reprogramación".
+
+Otro: estoy cambiando el nombre de lagunas variables para lo cual revisa también el diccionario. eso impactará en el ajuste correspondiente del dashboard. 
+
+Otro: he agregado una columna en la bd, que se llama "detalles". la idea es incorporarlo solo en la parte final del dashboard, es decir en la tabla de proyectos como columna final. 

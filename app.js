@@ -3,9 +3,8 @@ let allData = [];
 let filteredData = [];
 let charts = {
     physical: null,
-    certified: null,
-    accrued: null,
-    reprogramming: null
+    committed: null,
+    accrued: null
 };
 
 // Registrar el plugin de etiquetas de datos para todos los gráficos
@@ -66,12 +65,30 @@ function inicializarEventos() {
     const fileInput = document.getElementById("excel-file-input");
     fileInput.addEventListener("change", cargarExcelManual);
 
-    // Eventos para filtros en cascada
-    const filters = ["filter-cod-proy", "filter-cite", "filter-pet", "filter-reprog"];
-    filters.forEach(id => {
-        document.getElementById(id).addEventListener("change", () => {
-            aplicarFiltros();
-        });
+    // Eventos para filtros superiores
+    document.getElementById("filter-cite").addEventListener("change", (e) => {
+        document.getElementById("table-filter-cite").value = e.target.value;
+        aplicarFiltros();
+    });
+    document.getElementById("filter-pet").addEventListener("change", (e) => {
+        document.getElementById("table-filter-pet").value = e.target.value;
+        aplicarFiltros();
+    });
+
+    // Eventos para filtros de cabecera de la tabla
+    document.getElementById("table-filter-cite").addEventListener("change", (e) => {
+        document.getElementById("filter-cite").value = e.target.value;
+        aplicarFiltros();
+    });
+    document.getElementById("table-filter-pet").addEventListener("change", (e) => {
+        document.getElementById("filter-pet").value = e.target.value;
+        aplicarFiltros();
+    });
+    document.getElementById("table-filter-cod-proy").addEventListener("change", () => {
+        aplicarFiltros();
+    });
+    document.getElementById("table-filter-reprog").addEventListener("change", () => {
+        aplicarFiltros();
     });
 
     // Botón de limpiar filtros
@@ -172,7 +189,7 @@ function limpiarDatos(rawJson) {
 
             // 3. Limpieza de montos financieros
             const financ_prog = parseCleanNumber(row["financ_prog"]);
-            const financ_cert = parseCleanNumber(row["financ_cert"]);
+            const financ_compr = parseCleanNumber(row["financ_compr"] || row["financ_cert"]);
             const financ_deven = parseCleanNumber(row["financ_deven"]);
 
             // 4. Limpieza y transformación de porcentajes
@@ -180,7 +197,7 @@ function limpiarDatos(rawJson) {
             const fisica_ejec = parseCleanNumber(row["fisica_ejec"]);
             
             const fisica_pct = parsePercentage(row["fisica_pct"]);
-            const financ_cert_pct = parsePercentage(row["financ_cert_pct"]);
+            const financ_compr_pct = parsePercentage(row["financ_compr_pct"] || row["financ_cert_pct"]);
             const financ_deven_pct = parsePercentage(row["financ_deven_pct"]);
 
             // 5. Normalizar "req_reprogr"
@@ -192,13 +209,13 @@ function limpiarDatos(rawJson) {
             }
 
             // 6. Nuevas variables cualitativas
-            let req_reprogr_sustento = (row["req_reprogr_sustento"] || "").toString().trim();
-            if (req_reprogr_sustento.toLowerCase() === "sin especificar") {
-                req_reprogr_sustento = "";
-            }
             let mma_estado = (row["mma_estado"] || "").toString().trim();
             if (mma_estado.toLowerCase() === "sin especificar") {
                 mma_estado = "";
+            }
+            let detalles = (row["Detalles"] || row["detalles"] || "").toString().trim();
+            if (detalles.toLowerCase() === "sin especificar") {
+                detalles = "";
             }
 
             return {
@@ -210,13 +227,13 @@ function limpiarDatos(rawJson) {
                 fisica_ejec: fisica_ejec,
                 fisica_pct: fisica_pct,
                 financ_prog: financ_prog,
-                financ_cert: financ_cert,
+                financ_compr: financ_compr,
                 financ_deven: financ_deven,
-                financ_cert_pct: financ_cert_pct,
+                financ_compr_pct: financ_compr_pct,
                 financ_deven_pct: financ_deven_pct,
                 req_reprogr: req_reprogr,
-                req_reprogr_sustento: req_reprogr_sustento,
-                mma_estado: mma_estado
+                mma_estado: mma_estado,
+                detalles: detalles
             };
         });
 }
@@ -278,19 +295,37 @@ function inicializarOpcionesFiltros() {
 
 // Actualizar los dropdowns basados en la selección actual para crear el efecto en cascada
 function actualizarFiltrosCascada() {
-    const selCod = document.getElementById("filter-cod-proy");
     const selCite = document.getElementById("filter-cite");
     const selPet = document.getElementById("filter-pet");
-    const selReprog = document.getElementById("filter-reprog");
+    const selTableCite = document.getElementById("table-filter-cite");
+    const selTablePet = document.getElementById("table-filter-pet");
+    const selTableCod = document.getElementById("table-filter-cod-proy");
+    const selTableReprog = document.getElementById("table-filter-reprog");
 
     // Guardar los valores previamente seleccionados
-    const valCod = selCod.value;
     const valCite = selCite.value;
     const valPet = selPet.value;
-    const valReprog = selReprog.value;
+    const valCod = selTableCod.value;
+    const valReprog = selTableReprog.value;
 
     // Generar opciones filtrando los datos del resto de componentes
     
+    // CITEs disponibles considerando los otros filtros
+    const dataForCite = allData.filter(d => 
+        (!valPet || d.pet === valPet) &&
+        (!valCod || d.codigo_proyecto === valCod) &&
+        (!valReprog || d.req_reprogr === valReprog)
+    );
+    const optCite = [...new Set(dataForCite.map(d => d.cite))].sort();
+
+    // PETs disponibles considerando los otros filtros
+    const dataForPet = allData.filter(d => 
+        (!valCite || d.cite === valCite) &&
+        (!valCod || d.codigo_proyecto === valCod) &&
+        (!valReprog || d.req_reprogr === valReprog)
+    );
+    const optPet = [...new Set(dataForPet.map(d => d.pet))].sort();
+
     // Códigos de proyecto disponibles considerando los otros filtros
     const dataForCod = allData.filter(d => 
         (!valCite || d.cite === valCite) &&
@@ -299,35 +334,22 @@ function actualizarFiltrosCascada() {
     );
     const optCod = [...new Set(dataForCod.map(d => d.codigo_proyecto))].sort();
 
-    // CITEs disponibles considerando los otros filtros
-    const dataForCite = allData.filter(d => 
-        (!valCod || d.codigo_proyecto === valCod) &&
-        (!valPet || d.pet === valPet) &&
-        (!valReprog || d.req_reprogr === valReprog)
-    );
-    const optCite = [...new Set(dataForCite.map(d => d.cite))].sort();
-
-    // PETs disponibles considerando los otros filtros
-    const dataForPet = allData.filter(d => 
-        (!valCod || d.codigo_proyecto === valCod) &&
-        (!valCite || d.cite === valCite) &&
-        (!valReprog || d.req_reprogr === valReprog)
-    );
-    const optPet = [...new Set(dataForPet.map(d => d.pet))].sort();
-
     // Reprogramaciones disponibles considerando los otros filtros
     const dataForReprog = allData.filter(d => 
-        (!valCod || d.codigo_proyecto === valCod) &&
         (!valCite || d.cite === valCite) &&
-        (!valPet || d.pet === valPet)
+        (!valPet || d.pet === valPet) &&
+        (!valCod || d.codigo_proyecto === valCod)
     );
     const optReprog = [...new Set(dataForReprog.map(d => d.req_reprogr))].sort();
 
     // Volver a rellenar los selects preservando los valores
-    rellenarSelect(selCod, optCod, valCod, "Todos los códigos");
     rellenarSelect(selCite, optCite, valCite, "Todos los CITEs");
     rellenarSelect(selPet, optPet, valPet, "Todos los PET");
-    rellenarSelect(selReprog, optReprog, valReprog, "Todos");
+    
+    rellenarSelect(selTableCite, optCite, valCite, "Todos");
+    rellenarSelect(selTablePet, optPet, valPet, "Todos");
+    rellenarSelect(selTableCod, optCod, valCod, "Todos");
+    rellenarSelect(selTableReprog, optReprog, valReprog, "Todos");
 }
 
 function rellenarSelect(selectElement, options, selectedValue, defaultText) {
@@ -346,16 +368,16 @@ function rellenarSelect(selectElement, options, selectedValue, defaultText) {
 
 // Aplicar filtros seleccionados y actualizar vistas
 function aplicarFiltros() {
-    const valCod = document.getElementById("filter-cod-proy").value;
     const valCite = document.getElementById("filter-cite").value;
     const valPet = document.getElementById("filter-pet").value;
-    const valReprog = document.getElementById("filter-reprog").value;
+    const valCod = document.getElementById("table-filter-cod-proy").value;
+    const valReprog = document.getElementById("table-filter-reprog").value;
 
     // Filtrar el conjunto de datos completo
     filteredData = allData.filter(d => {
-        return (!valCod || d.codigo_proyecto === valCod) &&
-               (!valCite || d.cite === valCite) &&
+        return (!valCite || d.cite === valCite) &&
                (!valPet || d.pet === valPet) &&
+               (!valCod || d.codigo_proyecto === valCod) &&
                (!valReprog || d.req_reprogr === valReprog);
     });
 
@@ -368,10 +390,12 @@ function aplicarFiltros() {
 
 // Limpiar filtros restableciendo todos los valores y datos
 function limpiarFiltros() {
-    document.getElementById("filter-cod-proy").value = "";
     document.getElementById("filter-cite").value = "";
     document.getElementById("filter-pet").value = "";
-    document.getElementById("filter-reprog").value = "";
+    document.getElementById("table-filter-cite").value = "";
+    document.getElementById("table-filter-pet").value = "";
+    document.getElementById("table-filter-cod-proy").value = "";
+    document.getElementById("table-filter-reprog").value = "";
 
     filteredData = [...allData];
     
@@ -389,37 +413,31 @@ function actualizarDashboard() {
 // Calcular y renderizar KPIs
 function actualizarKPIs() {
     const totalProy = filteredData.length;
-    let citesOver50 = 0;
     let totalProg = 0;
-    let totalCert = 0;
+    let totalCompr = 0;
     let totalDeven = 0;
     let totalReprog = 0;
-    let pctCert = 0;
+    let pctCompr = 0;
     let pctDeven = 0;
 
     if (totalProy > 0) {
-        // CITEs con física > 50%
-        const citeData = agruparPorCite(filteredData);
-        citesOver50 = citeData.filter(c => c.fisica_pct > 50).length;
-
         // Sumas de montos
         totalProg = filteredData.reduce((acc, curr) => acc + curr.financ_prog, 0);
-        totalCert = filteredData.reduce((acc, curr) => acc + curr.financ_cert, 0);
+        totalCompr = filteredData.reduce((acc, curr) => acc + curr.financ_compr, 0);
         totalDeven = filteredData.reduce((acc, curr) => acc + curr.financ_deven, 0);
 
         // Reprogramaciones
         totalReprog = filteredData.filter(d => d.req_reprogr === "Sí").length;
 
         // Porcentajes globales
-        pctCert = totalProg > 0 ? (totalCert / totalProg) * 100 : 0;
+        pctCompr = totalProg > 0 ? (totalCompr / totalProg) * 100 : 0;
         pctDeven = totalProg > 0 ? (totalDeven / totalProg) * 100 : 0;
     }
 
     document.getElementById("kpi-val-projects").textContent = totalProy;
-    document.getElementById("kpi-val-cites-50").textContent = citesOver50;
     document.getElementById("kpi-val-prog").textContent = formatearSoles(totalProg);
-    document.getElementById("kpi-val-cert").textContent = formatearSoles(totalCert);
-    document.getElementById("kpi-val-cert-pct").textContent = `${pctCert.toFixed(1)}%`;
+    document.getElementById("kpi-val-compr").textContent = formatearSoles(totalCompr);
+    document.getElementById("kpi-val-compr-pct").textContent = `${pctCompr.toFixed(1)}%`;
     document.getElementById("kpi-val-deven").textContent = formatearSoles(totalDeven);
     document.getElementById("kpi-val-deven-pct").textContent = `${pctDeven.toFixed(1)}%`;
     document.getElementById("kpi-val-reprog").textContent = totalReprog;
@@ -438,7 +456,7 @@ function actualizarGraficos() {
     // Ajustar altura de los contenedores de los gráficos de barras horizontales según la cantidad de CITEs
     const dynamicHeight = Math.max(240, citeData.length * 32 + 35);
     document.getElementById("chart-physical").parentElement.parentElement.style.height = `${dynamicHeight}px`;
-    document.getElementById("chart-certified").parentElement.parentElement.style.height = `${dynamicHeight}px`;
+    document.getElementById("chart-committed").parentElement.parentElement.style.height = `${dynamicHeight}px`;
     document.getElementById("chart-accrued").parentElement.parentElement.style.height = `${dynamicHeight}px`;
 
     // Gráfico 1: % Ejecución Física (Barras Horizontales - Ordenado de mayor a menor)
@@ -476,19 +494,19 @@ function actualizarGraficos() {
         options: obtenerConfiguracionGraficoBarras(true) // true para horizontal
     });
 
-    // Gráfico 2: % Certificado (Barras Horizontales - Ordenado de mayor a menor)
-    const sortedCertified = [...citeData].sort((a, b) => b.financ_cert_pct - a.financ_cert_pct);
-    const labelsCertified = sortedCertified.map(d => d.cite);
-    const dataCertified = sortedCertified.map(d => d.financ_cert_pct);
+    // Gráfico 2: % Comprometido (Barras Horizontales - Ordenado de mayor a menor)
+    const sortedCommitted = [...citeData].sort((a, b) => b.financ_compr_pct - a.financ_compr_pct);
+    const labelsCommitted = sortedCommitted.map(d => d.cite);
+    const dataCommitted = sortedCommitted.map(d => d.financ_compr_pct);
 
-    const ctxCertified = document.getElementById("chart-certified").getContext("2d");
-    charts.certified = new Chart(ctxCertified, {
+    const ctxCommitted = document.getElementById("chart-committed").getContext("2d");
+    charts.committed = new Chart(ctxCommitted, {
         type: "bar",
         data: {
-            labels: labelsCertified,
+            labels: labelsCommitted,
             datasets: [{
-                label: "% Certificado Financiero",
-                data: dataCertified,
+                label: "% Comprometido Financiero",
+                data: dataCommitted,
                 backgroundColor: "rgba(180, 138, 39, 0.85)", // Dorado suave
                 borderColor: "rgba(180, 138, 39, 1)",
                 borderWidth: 1.5,
@@ -519,78 +537,6 @@ function actualizarGraficos() {
         },
         options: obtenerConfiguracionGraficoBarras(true)
     });
-
-    // Gráfico 4: Torta/Dona de Reprogramación (Sí/No)
-    let conteoSí = 0;
-    let conteoNo = 0;
-    filteredData.forEach(d => {
-        if (d.req_reprogr === "Sí") conteoSí++;
-        else conteoNo++;
-    });
-
-    const ctxReprog = document.getElementById("chart-reprogramming").getContext("2d");
-    charts.reprogramming = new Chart(ctxReprog, {
-        type: "doughnut",
-        data: {
-            labels: ["Requiere Reprogramación (Sí)", "No Requiere (No)"],
-            datasets: [{
-                data: [conteoSí, conteoNo],
-                backgroundColor: [
-                    "rgba(180, 138, 39, 0.85)", // Oro/Dorado
-                    "rgba(15, 23, 42, 0.85)"   // Azul marino
-                ],
-                borderColor: [
-                    "rgba(180, 138, 39, 1)",
-                    "rgba(15, 23, 42, 1)"
-                ],
-                borderWidth: 1.5,
-                radius: "60%" // Reducir el tamaño del anillo al 60% para dar espacio a etiquetas externas
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: 15
-            },
-            plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: {
-                        font: { family: "Inter", size: 11 },
-                        color: "#475569"
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const val = context.raw;
-                            const total = conteoSí + conteoNo;
-                            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                            return ` ${context.label}: ${val} (${pct}%)`;
-                        }
-                    }
-                },
-                datalabels: {
-                    formatter: function(value, context) {
-                        const total = conteoSí + conteoNo;
-                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                        return value > 0 ? `${value} (${percentage}%)` : "";
-                    },
-                    color: "#000000",
-                    anchor: "end",
-                    align: "outside",
-                    offset: 6,
-                    font: {
-                        family: "Inter",
-                        size: 10,
-                        weight: "bold"
-                    }
-                }
-            },
-            cutout: "60%"
-        }
-    });
 }
 
 // Agrupar filas del Excel por CITE para los gráficos agregados
@@ -601,13 +547,13 @@ function agruparPorCite(data) {
             groups[item.cite] = {
                 cite: item.cite,
                 fisica_pct_sum: 0,
-                financ_cert_pct_sum: 0,
+                financ_compr_pct_sum: 0,
                 financ_deven_pct_sum: 0,
                 count: 0
             };
         }
         groups[item.cite].fisica_pct_sum += item.fisica_pct;
-        groups[item.cite].financ_cert_pct_sum += item.financ_cert_pct;
+        groups[item.cite].financ_compr_pct_sum += item.financ_compr_pct;
         groups[item.cite].financ_deven_pct_sum += item.financ_deven_pct;
         groups[item.cite].count++;
     });
@@ -615,7 +561,7 @@ function agruparPorCite(data) {
     return Object.values(groups).map(g => ({
         cite: g.cite,
         fisica_pct: g.fisica_pct_sum / g.count,
-        financ_cert_pct: g.financ_cert_pct_sum / g.count,
+        financ_compr_pct: g.financ_compr_pct_sum / g.count,
         financ_deven_pct: g.financ_deven_pct_sum / g.count
     }));
 }
@@ -707,7 +653,7 @@ function actualizarTabla() {
         // Crear celdas con heatmap y estilos dinámicos
         // Para el heatmap usamos opacidad de colores corporativos
         const styleFisico = `background-color: rgba(30, 58, 138, ${row.fisica_pct / 100 * 0.22}); font-weight: 500;`;
-        const styleCertificado = `background-color: rgba(180, 138, 39, ${row.financ_cert_pct / 100 * 0.22}); font-weight: 500;`;
+        const styleComprometido = `background-color: rgba(180, 138, 39, ${row.financ_compr_pct / 100 * 0.22}); font-weight: 500;`;
         const styleDevengado = `background-color: rgba(15, 23, 42, ${row.financ_deven_pct / 100 * 0.22}); font-weight: 500;`;
 
         tr.innerHTML = `
@@ -719,17 +665,17 @@ function actualizarTabla() {
             <td class="text-right">${row.fisica_ejec}</td>
             <td class="text-right" style="${styleFisico}">${row.fisica_pct.toFixed(1)}%</td>
             <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_prog)}</td>
-            <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_cert)}</td>
+            <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_compr)}</td>
             <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_deven)}</td>
-            <td class="text-right" style="${styleCertificado}">${row.financ_cert_pct.toFixed(1)}%</td>
+            <td class="text-right" style="${styleComprometido}">${row.financ_compr_pct.toFixed(1)}%</td>
             <td class="text-right" style="${styleDevengado}">${row.financ_deven_pct.toFixed(1)}%</td>
             <td class="text-center">
                 <span class="badge ${row.req_reprogr === "Sí" ? "btn-primary" : "badge-light"}" style="font-size: 0.7rem; padding: 0.15rem 0.45rem;">
                     ${row.req_reprogr}
                 </span>
             </td>
-            <td>${row.req_reprogr_sustento}</td>
             <td>${row.mma_estado}</td>
+            <td>${row.detalles}</td>
         `;
         
         tableBody.appendChild(tr);
@@ -739,7 +685,7 @@ function actualizarTabla() {
 // Calcular Alertas de acuerdo con la lógica operativa-financiera
 function calcularAlerta(row) {
     const fisica = row.fisica_pct;
-    const cert = row.financ_cert_pct;
+    const cert = row.financ_compr_pct;
     const deven = row.financ_deven_pct;
 
     // Lógica 1: Crítico operativo (fisica_pct < 25 y financ_deven_pct < 25)
@@ -750,7 +696,7 @@ function calcularAlerta(row) {
         };
     }
 
-    // Lógica 2: Riesgo financiero (financ_cert_pct > 50 y financ_deven_pct < 25)
+    // Lógica 2: Riesgo financiero (financ_compr_pct > 50 y financ_deven_pct < 25)
     if (cert > 50 && deven < 25) {
         return {
             texto: "Riesgo financiero",
@@ -758,7 +704,7 @@ function calcularAlerta(row) {
         };
     }
 
-    // Lógica 3: Desfase físico-financiero (financ_cert_pct - fisica_pct > 30)
+    // Lógica 3: Desfase físico-financiero (financ_compr_pct - fisica_pct > 30)
     if ((cert - fisica) > 30) {
         return {
             texto: "Desfase físico-financiero",

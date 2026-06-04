@@ -83,191 +83,151 @@
     <main class="dashboard-container">
         <!-- Layout superior: Filtros + KPIs y Gráficos -->
         <div class="dashboard-top-layout">
-            <!-- Panel Lateral de Filtros (Izquierda) -->
-            <aside class="sidebar-filters">
-            <div class="sidebar-header">
-                <h2>Filtros de Control</h2>
-                <p>Ajusta las opciones para filtrar los datos</p>
-            </div>
-            
-            <div class="filter-group">
-                <label for="filter-cod-proy">Cód. Proyecto</label>
-                <select id="filter-cod-proy" class="filter-select">
-                    <option value="">Todos los códigos</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="filter-cite">CITE / Unidad Técnica</label>
-                <select id="filter-cite" class="filter-select">
-                    <option value="">Todos los CITEs</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="filter-pet">PET</label>
-                <select id="filter-pet" class="filter-select">
-                    <option value="">Todos los PET</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="filter-reprog">Req. Reprogramación</label>
-                <select id="filter-reprog" class="filter-select">
-                    <option value="">Todos</option>
-                </select>
-            </div>
-            
-            <button id="btn-clear-filters" class="btn btn-primary btn-block">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-                Limpiar filtros
-            </button>
-        </aside>
-
-        <!-- Contenido del Dashboard (Derecha) -->
-        <section class="dashboard-content">
-            <!-- Mensaje de Carga Inicial -->
-            <div id="loading-state" class="state-card loading-card hidden">
-                <div class="spinner"></div>
-                <p>Cargando información del archivo Excel...</p>
-            </div>
-            <div id="no-data-state" class="state-card info-card hidden">
-                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-                <p>Carga un archivo Excel para visualizar el dashboard.</p>
-            </div>
-
-            <!-- Fila de Tarjetas KPI -->
-            <div class="kpi-grid" id="kpi-grid">
-                <!-- KPI 1 -->
-                <div class="kpi-card" id="kpi-projects">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">N° Proyectos</h3>
-                        <p class="kpi-value" id="kpi-val-projects">0</p>
+            <!-- Contenido del Dashboard -->
+            <section class="dashboard-content">
+                <!-- Barra Horizontal de Filtros -->
+                <div class="filters-bar" id="filters-bar-container">
+                    <div class="filters-bar-title">
+                        <h2>Filtros de Control</h2>
+                        <p>Ajusta las opciones para filtrar los datos</p>
                     </div>
-                    <div class="kpi-icon-wrapper kpi-blue">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
+                    <div class="filters-inline-group">
+                        <div class="filter-field">
+                            <label for="filter-cite">CITE / Unidad Técnica</label>
+                            <select id="filter-cite" class="filter-select">
+                                <option value="">Todos los CITEs</option>
+                            </select>
+                        </div>
+                        <div class="filter-field">
+                            <label for="filter-pet">PET</label>
+                            <select id="filter-pet" class="filter-select">
+                                <option value="">Todos los PET</option>
+                            </select>
+                        </div>
+                        <button id="btn-clear-filters" class="btn btn-secondary">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Limpiar filtros
+                        </button>
                     </div>
                 </div>
 
-                <!-- KPI 2 -->
-                <div class="kpi-card" id="kpi-cites-50">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">CITE AVANCE FISICO >50%</h3>
-                        <p class="kpi-value" id="kpi-val-cites-50">0</p>
-                    </div>
-                    <div class="kpi-icon-wrapper kpi-gold">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
+                <!-- Mensaje de Carga Inicial -->
+                <div id="loading-state" class="state-card loading-card hidden">
+                    <div class="spinner"></div>
+                    <p>Cargando información del archivo Excel...</p>
+                </div>
+                <div id="no-data-state" class="state-card info-card hidden">
+                    <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <p>Carga un archivo Excel para visualizar el dashboard.</p>
                 </div>
 
-                <!-- KPI 3 -->
-                <div class="kpi-card" id="kpi-prog">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">Monto total programado</h3>
-                        <p class="kpi-value kpi-small-font" id="kpi-val-prog">S/ 0</p>
-                    </div>
-                    <div class="kpi-icon-wrapper kpi-indigo">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7.5a3 3 0 013-3h0a3 3 0 013 3M9 7.5v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6m-7.5 0c-1.5 0-3 1.5-3 3.5 0 5 3.5 7.5 7.5 7.5s7.5-2.5 7.5-7.5c0-2-1.5-3.5-3-3.5h-9zM12 11v4m-2-2h4"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- KPI 4 -->
-                <div class="kpi-card" id="kpi-cert">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">Monto total certificado</h3>
-                        <p class="kpi-value kpi-small-font" id="kpi-val-cert">S/ 0</p>
-                        <div class="kpi-subvalue-container">
-                            <span class="kpi-subvalue" id="kpi-val-cert-pct">0.0%</span>
-                            <span class="kpi-subvalue-label">del monto total programado</span>
+                <!-- Fila de Tarjetas KPI -->
+                <div class="kpi-grid" id="kpi-grid">
+                    <!-- KPI 1 -->
+                    <div class="kpi-card" id="kpi-projects">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">N° Proyectos</h3>
+                            <p class="kpi-value" id="kpi-val-projects">0</p>
+                        </div>
+                        <div class="kpi-icon-wrapper kpi-blue">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
                         </div>
                     </div>
-                    <div class="kpi-icon-wrapper kpi-teal">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                </div>
 
-                <!-- KPI 5 -->
-                <div class="kpi-card" id="kpi-deven">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">Monto total devengado</h3>
-                        <p class="kpi-value kpi-small-font" id="kpi-val-deven">S/ 0</p>
-                        <div class="kpi-subvalue-container">
-                            <span class="kpi-subvalue" id="kpi-val-deven-pct">0.0%</span>
-                            <span class="kpi-subvalue-label">del monto total programado</span>
+                    <!-- KPI 2 (Reubicado de 6) -->
+                    <div class="kpi-card" id="kpi-reprog">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Requiere reprogramaciones</h3>
+                            <p class="kpi-value" id="kpi-val-reprog">0</p>
+                        </div>
+                        <div class="kpi-icon-wrapper kpi-orange">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
                         </div>
                     </div>
-                    <div class="kpi-icon-wrapper kpi-red">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                        </svg>
-                    </div>
-                </div>
 
-                <!-- KPI 6 -->
-                <div class="kpi-card" id="kpi-reprog">
-                    <div class="kpi-body">
-                        <h3 class="kpi-title">Requiere reprogramaciones</h3>
-                        <p class="kpi-value" id="kpi-val-reprog">0</p>
+                    <!-- KPI 3 -->
+                    <div class="kpi-card" id="kpi-prog">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Monto total programado</h3>
+                            <p class="kpi-value kpi-small-font" id="kpi-val-prog">S/ 0</p>
+                        </div>
+                        <div class="kpi-icon-wrapper kpi-indigo">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7.5a3 3 0 013-3h0a3 3 0 013 3M9 7.5v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6m-7.5 0c-1.5 0-3 1.5-3 3.5 0 5 3.5 7.5 7.5 7.5s7.5-2.5 7.5-7.5c0-2-1.5-3.5-3-3.5h-9zM12 11v4m-2-2h4"></path>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="kpi-icon-wrapper kpi-orange">
-                        <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Gráficos Principales -->
-            <div class="charts-container" id="charts-layout">
-                <!-- Fila 1 de Gráficos -->
-                <div class="chart-row">
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Porcentaje de ejecución física</h3>
+                    <!-- KPI 4 (Renombrado de certificado a comprometido) -->
+                    <div class="kpi-card" id="kpi-compr">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Monto total comprometido</h3>
+                            <p class="kpi-value kpi-small-font" id="kpi-val-compr">S/ 0</p>
+                            <div class="kpi-subvalue-container">
+                                <span class="kpi-subvalue" id="kpi-val-compr-pct">0.0%</span>
+                                <span class="kpi-subvalue-label">del monto total programado</span>
+                            </div>
                         </div>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-physical"></canvas>
+                        <div class="kpi-icon-wrapper kpi-teal">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
                         </div>
                     </div>
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Porcentaje de ejecución financiera certificada</h3>
+
+                    <!-- KPI 5 -->
+                    <div class="kpi-card" id="kpi-deven">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Monto total devengado</h3>
+                            <p class="kpi-value kpi-small-font" id="kpi-val-deven">S/ 0</p>
+                            <div class="kpi-subvalue-container">
+                                <span class="kpi-subvalue" id="kpi-val-deven-pct">0.0%</span>
+                                <span class="kpi-subvalue-label">del monto total programado</span>
+                            </div>
                         </div>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-certified"></canvas>
+                        <div class="kpi-icon-wrapper kpi-red">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- Fila 2 de Gráficos -->
-                <div class="chart-row">
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Porcentaje de ejecución financiera devengada</h3>
+                <!-- Gráficos Principales -->
+                <div class="charts-container" id="charts-layout">
+                    <!-- Fila única de Gráficos (3 Columnas) -->
+                    <div class="chart-row">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Porcentaje de ejecución física</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-physical"></canvas>
+                            </div>
                         </div>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-accrued"></canvas>
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Porcentaje de ejecución financiera comprometida</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-committed"></canvas>
+                            </div>
                         </div>
-                    </div>
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Proyectos que requieren reprogramación</h3>
-                            <span class="chart-subtitle">Distribución Sí vs No</span>
-                        </div>
-                        <div class="chart-wrapper doughnut-wrapper">
-                            <canvas id="chart-reprogramming"></canvas>
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Porcentaje de ejecución financiera devengada</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-accrued"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -276,31 +236,59 @@
 
         <!-- Tabla de Detalle -->
         <div class="table-card" id="detail-table-card">
-                <div class="table-header">
-                    <h2>Detalle de Proyectos</h2>
-                    <span class="badge badge-light" id="table-row-count">0 items</span>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table" id="data-table">
-                        <thead>
-                            <tr>
-                                <th>N</th>
-                                <th>Código de proyecto</th>
-                                <th>CITE</th>
-                                <th>PET</th>
-                                <th class="text-right">Ejecución física programada</th>
-                                <th class="text-right">Ejecución física ejecutada</th>
-                                <th class="text-right">Porcentaje de ejecución física ejecutada</th>
-                                <th class="text-right">Ejecución financiera programada</th>
-                                <th class="text-right">Ejecución financiera certificada</th>
-                                <th class="text-right">Ejecución financiera devengada</th>
-                                <th class="text-right">Porcentaje de ejecución financiera certificada</th>
-                                <th class="text-right">Porcentaje de ejecución financiera devengada</th>
-                                <th class="text-center">Requiere reprogramación</th>
-                                <th>Motivos de la reprogramación</th>
-                                <th>Estado de las Modificaciones de Menor Alcance</th>
-                            </tr>
-                        </thead>
+            <div class="table-header">
+                <h2>Detalle de Proyectos</h2>
+                <span class="badge badge-light" id="table-row-count">0 items</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table" id="data-table">
+                    <thead>
+                        <tr>
+                            <th>N</th>
+                            <th>
+                                <div class="header-filter-container">
+                                    <span>Código de proyecto</span>
+                                    <select id="table-filter-cod-proy" class="table-filter-select">
+                                        <option value="">Todos</option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="header-filter-container">
+                                    <span>CITE</span>
+                                    <select id="table-filter-cite" class="table-filter-select">
+                                        <option value="">Todos</option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="header-filter-container">
+                                    <span>PET</span>
+                                    <select id="table-filter-pet" class="table-filter-select">
+                                        <option value="">Todos</option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th class="text-right">Ejecución física programada</th>
+                            <th class="text-right">Ejecución física ejecutada</th>
+                            <th class="text-right">Porcentaje de ejecución física ejecutada</th>
+                            <th class="text-right">Ejecución financiera programada</th>
+                            <th class="text-right">Ejecución financiera comprometida</th>
+                            <th class="text-right">Ejecución financiera devengada</th>
+                            <th class="text-right">Porcentaje de ejecución financiera comprometida</th>
+                            <th class="text-right">Porcentaje de ejecución financiera devengada</th>
+                            <th class="text-center">
+                                <div class="header-filter-container text-center">
+                                    <span>Requiere reprogramación</span>
+                                    <select id="table-filter-reprog" class="table-filter-select">
+                                        <option value="">Todos</option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>Estado de las Modificaciones de Menor Alcance</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
                         <tbody id="table-body">
                             <!-- Filas generadas dinámicamente -->
                         </tbody>

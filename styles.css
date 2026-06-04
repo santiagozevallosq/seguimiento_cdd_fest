@@ -243,55 +243,65 @@ body {
 }
 
 .dashboard-top-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
-    align-items: start;
 }
 
-/* Panel Lateral (Sidebar Filtros) */
-.sidebar-filters {
-    background-color: var(--bg-sidebar);
+/* Barra Horizontal de Filtros */
+.filters-bar {
+    background-color: var(--bg-card);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     box-shadow: var(--shadow-sm);
-    height: fit-content;
-    position: sticky;
-    top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
 }
 
-.sidebar-header {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border);
+.filters-bar-title {
+    display: flex;
+    flex-direction: column;
 }
 
-.sidebar-header h2 {
+.filters-bar-title h2 {
     font-family: var(--font-display);
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-primary);
 }
 
-.sidebar-header p {
+.filters-bar-title p {
     font-size: 0.8rem;
     color: var(--color-text-muted);
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
 }
 
-.filter-group {
-    margin-bottom: 1.25rem;
+.filters-inline-group {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.25rem;
+    flex-wrap: wrap;
 }
 
-.filter-group label {
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 200px;
+}
+
+.filter-field label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    color: var(--color-text-main);
-    margin-bottom: 0.4rem;
+    color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.05em;
 }
 
 .filter-select {
@@ -323,7 +333,7 @@ body {
 /* Tarjetas KPI */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
 }
 
@@ -358,9 +368,8 @@ body {
 }
 
 #kpi-projects::after { background-color: var(--kpi-blue-text); }
-#kpi-cites-50::after { background-color: var(--kpi-gold-text); }
 #kpi-prog::after { background-color: var(--kpi-indigo-text); }
-#kpi-cert::after { background-color: var(--kpi-teal-text); }
+#kpi-compr::after { background-color: var(--kpi-teal-text); }
 #kpi-deven::after { background-color: #ef4444; }
 #kpi-reprog::after { background-color: #f97316; }
 
@@ -459,7 +468,7 @@ body {
 
 .chart-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
 }
 
@@ -563,6 +572,36 @@ body {
     min-width: 75px;
 }
 
+/* Filtros en las cabeceras de la tabla */
+.header-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+    text-align: left;
+}
+
+.table-filter-select {
+    width: 100%;
+    padding: 0.2rem 0.35rem;
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    background-color: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: none; /* Mantener mayúsculas y minúsculas originales de las variables */
+}
+
+.table-filter-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+}
+
 .data-table td {
     padding: 0.55rem 0.5rem;
     border-bottom: 1px solid var(--color-border);
@@ -654,13 +693,23 @@ body {
 }
 
 @media (max-width: 1024px) {
-    .dashboard-top-layout {
+    .chart-row {
         grid-template-columns: 1fr;
     }
     
-    .sidebar-filters {
-        position: static;
+    .filters-inline-group {
+        justify-content: flex-start;
         width: 100%;
+    }
+    
+    .filter-field {
+        flex: 1;
+        min-width: 180px;
+    }
+    
+    .filters-inline-group .btn {
+        width: 100%;
+        margin-top: 0.5rem;
     }
 }
 
