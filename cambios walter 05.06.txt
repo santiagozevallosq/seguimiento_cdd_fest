@@ -1,0 +1,14 @@
+cambios
+
+1) en la barra de filtros al inicio del dashobard se debe incorporar también la variable "requiere reprogramación". 
+
+2) En la parte superior donde dice "Resultados del avance de la ejecución física y financiera de los proyectos" cámbialo por "Resultados del avance de la ejecución física y financiera de los proyectos al primer hito"
+
+3) en la zona de KPI introducir dos casilleros entre KPI de "requiere reprogramaciones" y "monto total programado". los cuales serán: primer casillero KPI de actividad programa (celda E) y actividad en ejecución (celda F). solo para actividad en ejecución debe haber el valor numérico de la suma y el porcentaje total respecto de las actividades físicas programadas (celda E).
+
+El otro casillero, será sobre servicios realizados (celda I) y Unidades Productivas beneficiadas (celda J). ambas deben estar dentro de un solo recuadro. 
+
+Entonces estos dos casilleros deben ubicarse donde indique, y todos los KPI deben poder visualizarse en una sola fila. 
+
+4) para los gráficos de ejecución financiera, quiero que además del porcentaje se visualice el valor monetario. Por ejemplo: S/ 97,331. 
+

@@ -59,7 +59,7 @@
                 <div class="title-group">
                     <span class="badge">CDD - FEST</span>
                     <h1 id="main-title">PANEL DE CONTROL DE AVANCES DE PROYECTOS CDD - FEST</h1>
-                    <p id="main-subtitle" class="subtitle">Resultados del avance de la ejecución física y financiera de los proyectos</p>
+                    <p id="main-subtitle" class="subtitle">Resultados del avance de la ejecución física y financiera de los proyectos al primer hito</p>
                 </div>
             </div>
             <div class="header-meta">
@@ -102,6 +102,12 @@
                             <label for="filter-pet">PET</label>
                             <select id="filter-pet" class="filter-select">
                                 <option value="">Todos los PET</option>
+                            </select>
+                        </div>
+                        <div class="filter-field">
+                            <label for="filter-reprog">Requiere reprogramación</label>
+                            <select id="filter-reprog" class="filter-select">
+                                <option value="">Todos</option>
                             </select>
                         </div>
                         <button id="btn-clear-filters" class="btn btn-secondary">
@@ -149,6 +155,50 @@
                         <div class="kpi-icon-wrapper kpi-orange">
                             <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3: Actividades Físicas (Nuevo) -->
+                    <div class="kpi-card" id="kpi-activities">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Actividades Físicas</h3>
+                            <div class="kpi-split-values">
+                                <div class="kpi-split-item">
+                                    <p class="kpi-value kpi-small-font" id="kpi-val-fisica-prog">0</p>
+                                    <span class="kpi-subvalue-label">programadas</span>
+                                </div>
+                                <div class="kpi-split-item">
+                                    <p class="kpi-value kpi-small-font" id="kpi-val-fisica-ejec">0</p>
+                                    <span class="kpi-subvalue-label">en ejecución <span id="kpi-val-fisica-ejec-pct">(0.0%)</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-icon-wrapper kpi-blue">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- KPI 4: Servicios y U.P. (Nuevo) -->
+                    <div class="kpi-card" id="kpi-services-up">
+                        <div class="kpi-body">
+                            <h3 class="kpi-title">Servicios y Unidades</h3>
+                            <div class="kpi-split-values">
+                                <div class="kpi-split-item">
+                                    <p class="kpi-value kpi-small-font" id="kpi-val-servicio">0</p>
+                                    <span class="kpi-subvalue-label">servicios</span>
+                                </div>
+                                <div class="kpi-split-item">
+                                    <p class="kpi-value kpi-small-font" id="kpi-val-up">0</p>
+                                    <span class="kpi-subvalue-label">Unidades Productivas beneficiarias</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-icon-wrapper kpi-teal">
+                            <svg class="kpi-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
                         </div>
                     </div>

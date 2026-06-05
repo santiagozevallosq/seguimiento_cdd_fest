@@ -1,0 +1,15 @@
+1. en la zona de KPI, hacer estos cambios:
+KPI actividad física: dice 115 programadas y 48 avance. eso está bien. pero lo que quiero es que se vea asi:
+115 actividades programadas 115
+48 actividades en ejecución 48 (41.7%)
+
+para el otro KPI servicios y unidades:
+servicios 1066
+Unidades Productivas beneficiarias 313
+
+
+2. en la zona de gráficos verificar que las descripciones de las categorías en el eje Y se lean correctamente, actualmente hay partes que se cortan. 
+
+3. en la zona de graficos quiero que apliques estas reglas según los porcentajes. para los tres gráficos. 
+si el porcentaje es 80% o más que considere el color verde claro. si el porcentaje esta entre 50% y 79% que el color sea ambar. si el porcentaje es menor a 49% que el color sea rojo claro. la idea es que los colores se apliquen a las barras de los tres gráficos. 
+La misma lógica que se aplique en la zona de detalle de proyectos, justamente para esas variables. 
