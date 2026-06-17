@@ -194,7 +194,8 @@ function limpiarDatos(rawJson) {
 
             // 3. Limpieza de montos financieros
             const financ_prog = parseCleanNumber(row["financ_prog"]);
-            const financ_compr = parseCleanNumber(row["financ_compr"] || row["financ_cert"]);
+            const financ_cert = parseCleanNumber(row["financ_cert"]);
+            const financ_compr = parseCleanNumber(row["financ_compr"]);
             const financ_deven = parseCleanNumber(row["financ_deven"]);
 
             // 4. Limpieza y transformación de porcentajes
@@ -202,7 +203,8 @@ function limpiarDatos(rawJson) {
             const fisica_ejec = parseCleanNumber(row["fisica_ejec"]);
             
             const fisica_pct = parsePercentage(row["fisica_pct"]);
-            const financ_compr_pct = parsePercentage(row["financ_compr_pct"] || row["financ_cert_pct"]);
+            const financ_cert_pct = parsePercentage(row["financ_cert_pct"]);
+            const financ_compr_pct = parsePercentage(row["financ_compr_pct"]);
             const financ_deven_pct = parsePercentage(row["financ_deven_pct"]);
 
             // 5. Normalizar "req_reprogr"
@@ -236,8 +238,10 @@ function limpiarDatos(rawJson) {
                 fisica_ejec: fisica_ejec,
                 fisica_pct: fisica_pct,
                 financ_prog: financ_prog,
+                financ_cert: financ_cert,
                 financ_compr: financ_compr,
                 financ_deven: financ_deven,
+                financ_cert_pct: financ_cert_pct,
                 financ_compr_pct: financ_compr_pct,
                 financ_deven_pct: financ_deven_pct,
                 req_reprogr: req_reprogr,
@@ -428,9 +432,11 @@ function actualizarDashboard() {
 function actualizarKPIs() {
     const totalProy = filteredData.length;
     let totalProg = 0;
+    let totalCert = 0;
     let totalCompr = 0;
     let totalDeven = 0;
     let totalReprog = 0;
+    let pctCert = 0;
     let pctCompr = 0;
     let pctDeven = 0;
 
@@ -443,6 +449,7 @@ function actualizarKPIs() {
     if (totalProy > 0) {
         // Sumas de montos
         totalProg = filteredData.reduce((acc, curr) => acc + curr.financ_prog, 0);
+        totalCert = filteredData.reduce((acc, curr) => acc + curr.financ_cert, 0);
         totalCompr = filteredData.reduce((acc, curr) => acc + curr.financ_compr, 0);
         totalDeven = filteredData.reduce((acc, curr) => acc + curr.financ_deven, 0);
 
@@ -450,6 +457,7 @@ function actualizarKPIs() {
         totalReprog = filteredData.filter(d => d.req_reprogr === "Sí").length;
 
         // Porcentajes globales
+        pctCert = totalProg > 0 ? (totalCert / totalProg) * 100 : 0;
         pctCompr = totalProg > 0 ? (totalCompr / totalProg) * 100 : 0;
         pctDeven = totalProg > 0 ? (totalDeven / totalProg) * 100 : 0;
 
@@ -464,6 +472,8 @@ function actualizarKPIs() {
     // Renderizar nuevos KPIs
     document.getElementById("kpi-val-projects").textContent = totalProy;
     document.getElementById("kpi-val-prog").textContent = formatearSoles(totalProg);
+    document.getElementById("kpi-val-cert").textContent = formatearSoles(totalCert);
+    document.getElementById("kpi-val-cert-pct").textContent = `${pctCert.toFixed(1)}%`;
     document.getElementById("kpi-val-compr").textContent = formatearSoles(totalCompr);
     document.getElementById("kpi-val-compr-pct").textContent = `${pctCompr.toFixed(1)}%`;
     document.getElementById("kpi-val-deven").textContent = formatearSoles(totalDeven);
@@ -734,6 +744,7 @@ function actualizarTabla() {
         
         // Crear celdas con estilos dinámicos tipo semáforo
         const styleFisico = obtenerEstiloCeldaSemaforo(row.fisica_pct);
+        const styleCertificado = obtenerEstiloCeldaSemaforo(row.financ_cert_pct);
         const styleComprometido = obtenerEstiloCeldaSemaforo(row.financ_compr_pct);
         const styleDevengado = obtenerEstiloCeldaSemaforo(row.financ_deven_pct);
 
@@ -746,8 +757,10 @@ function actualizarTabla() {
             <td class="text-right">${row.fisica_ejec}</td>
             <td class="text-right" style="${styleFisico}">${row.fisica_pct.toFixed(1)}%</td>
             <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_prog)}</td>
+            <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_cert)}</td>
             <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_compr)}</td>
             <td class="text-right" style="white-space: nowrap;">${formatearSoles(row.financ_deven)}</td>
+            <td class="text-right" style="${styleCertificado}">${row.financ_cert_pct.toFixed(1)}%</td>
             <td class="text-right" style="${styleComprometido}">${row.financ_compr_pct.toFixed(1)}%</td>
             <td class="text-right" style="${styleDevengado}">${row.financ_deven_pct.toFixed(1)}%</td>
             <td class="text-center">

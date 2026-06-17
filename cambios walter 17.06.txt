@@ -1,0 +1,13 @@
+en la zona de KPI quiero estos cambios:
+el orden de presentación debe ser: 
+MONTO TOTAL PROGRAMADO
+MONTO TOTAL CERTIFICADO
+MONTO TOTAL COMPROMETIDO
+MONTO TOTAL DEVENGADO
+tener en cuenta que en la data está la columna sobre "MONTO TOTAL CERTIFICADO y se llama la variable financ_cert"
+
+En la zona de detalles de proyectos, también incorporar en este orden las columnas: 
+MONTO TOTAL PROGRAMADO
+MONTO TOTAL CERTIFICADO
+MONTO TOTAL COMPROMETIDO
+MONTO TOTAL DEVENGADO

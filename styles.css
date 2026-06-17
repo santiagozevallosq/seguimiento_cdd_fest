@@ -333,7 +333,7 @@ body {
 /* Tarjetas KPI */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 0.75rem;
 }
 
@@ -369,6 +369,7 @@ body {
 
 #kpi-projects::after { background-color: var(--kpi-blue-text); }
 #kpi-prog::after { background-color: var(--kpi-indigo-text); }
+#kpi-cert::after { background-color: var(--kpi-gold-text); }
 #kpi-compr::after { background-color: var(--kpi-teal-text); }
 #kpi-deven::after { background-color: #ef4444; }
 #kpi-reprog::after { background-color: #f97316; }
