@@ -224,7 +224,7 @@ function limpiarDatos(rawJson) {
             if (mma_estado.toLowerCase() === "sin especificar") {
                 mma_estado = "";
             }
-            let detalles = (row["Detalles"] || row["detalles"] || "").toString().trim();
+            let detalles = (row["Incidencias reportadas"] || row["incidencias reportadas"] || row["Detalles"] || row["detalles"] || row["detalle"] || "").toString().trim();
             if (detalles.toLowerCase() === "sin especificar") {
                 detalles = "";
             }
