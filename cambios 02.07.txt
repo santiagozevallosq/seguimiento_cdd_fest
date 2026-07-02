@@ -1,0 +1,1 @@
+Incorporar la variable "monto_desemb" dentro de los KPI que están al inicio del tablero. eso lo incorporarás mediante un nuevo casillero donde aparezca el nombre "Monto desembolsado" y el valor correspondiente que será la suma de todos los monto de los proyectos. 

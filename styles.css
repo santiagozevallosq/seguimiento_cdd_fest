@@ -25,6 +25,9 @@
     --kpi-indigo-bg: rgba(99, 102, 241, 0.08);
     --kpi-indigo-text: #4338ca;
     
+    --kpi-green-bg: rgba(34, 197, 94, 0.08);
+    --kpi-green-text: #15803d;
+    
     /* Alertas */
     --alert-critico-bg: #fee2e2;
     --alert-critico-text: #991b1b;
@@ -333,15 +336,15 @@ body {
 /* Tarjetas KPI */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: repeat(9, 1fr); /* 9 columnas en una sola fila */
+    gap: 0.5rem; /* Margen ligeramente menor para ganar espacio */
 }
 
 .kpi-card {
     background-color: var(--bg-card);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
-    padding: 1rem 0.85rem;
+    padding: 0.65rem 0.5rem; /* Margen reducido para maximizar el ancho interno del texto */
     box-shadow: var(--shadow-sm);
     display: flex;
     justify-content: space-between;
@@ -375,13 +378,14 @@ body {
 #kpi-reprog::after { background-color: #f97316; }
 #kpi-activities::after { background-color: var(--kpi-blue-text); }
 #kpi-services-up::after { background-color: var(--kpi-teal-text); }
+#kpi-desemb::after { background-color: #22c55e; }
 
 .kpi-split-values {
     display: flex;
-    gap: 1.25rem;
+    gap: 0.35rem; /* Gap reducido para que quepan las dos columnas de datos en una sola tarjeta */
     align-items: flex-start;
     width: 100%;
-    margin-top: 0.25rem;
+    margin-top: 0.2rem;
 }
 
 .kpi-split-item {
@@ -396,63 +400,64 @@ body {
 }
 
 .kpi-split-item .kpi-subvalue-label {
-    font-size: 0.56rem;
-    line-height: 1.25;
-    margin-top: 0.1rem;
+    font-size: 0.5rem; /* Tamaño optimizado para evitar solapamientos en tarjeta de 1 col */
+    line-height: 1.2;
+    margin-top: 0.05rem;
 }
 
 .kpi-body {
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding-right: 1.7rem; /* Reducido para alinearse al nuevo tamaño del icono y maximizar espacio */
+    box-sizing: border-box;
 }
 
 .kpi-title {
-    font-size: 0.72rem;
+    font-size: 0.58rem; /* Reducido para evitar saltos excesivos */
     font-weight: 700;
     color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
-    line-height: 1.25;
-    min-height: 2.2rem;
-    padding-right: 2.5rem; /* Evita superposición con el icono absolute */
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+    min-height: 1.5rem; /* Asegura alineación perfecta */
 }
 
 .kpi-value {
     font-family: var(--font-display);
-    font-size: 1.65rem;
+    font-size: 1.3rem; /* Reducido para tarjeta de 1 col */
     font-weight: 800;
     color: var(--color-primary);
     line-height: 1.1;
-    margin: 0.15rem 0;
+    margin: 0.1rem 0;
 }
 
 .kpi-small-font {
-    font-size: 1.2rem; /* Ajustado para que quepan montos monetarios */
+    font-size: 0.95rem; /* Optimizado para montos monetarios largos en una sola línea */
     font-weight: 700;
 }
 
 .kpi-subvalue-container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
 }
 
 .kpi-subvalue {
     font-family: var(--font-display);
-    font-size: 0.85rem;
+    font-size: 0.72rem; /* Reducido */
     font-weight: 700;
     color: var(--color-accent);
     line-height: 1;
 }
 
 .kpi-subvalue-label {
-    font-size: 0.62rem;
+    font-size: 0.52rem; /* Reducido */
     font-weight: 600;
     color: var(--color-text-muted);
-    line-height: 1;
-    margin-top: 0.15rem;
+    line-height: 1.1;
+    margin-top: 0.1rem;
     text-transform: uppercase;
     letter-spacing: 0.01em;
 }
@@ -467,10 +472,10 @@ body {
 
 .kpi-icon-wrapper {
     position: absolute;
-    top: 0.85rem;
-    right: 0.85rem;
-    width: 2.2rem;
-    height: 2.2rem;
+    top: 0.6rem; /* Alineado al nuevo padding */
+    right: 0.5rem;
+    width: 1.6rem; /* Reducido */
+    height: 1.6rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -479,8 +484,8 @@ body {
 }
 
 .kpi-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 0.9rem; /* Reducido */
+    height: 0.9rem;
 }
 
 .kpi-blue { background-color: var(--kpi-blue-bg); color: var(--kpi-blue-text); }
@@ -489,6 +494,7 @@ body {
 .kpi-indigo { background-color: var(--kpi-indigo-bg); color: var(--kpi-indigo-text); }
 .kpi-red { background-color: rgba(239, 68, 68, 0.08); color: #ef4444; }
 .kpi-orange { background-color: rgba(249, 115, 22, 0.08); color: #f97316; }
+.kpi-green { background-color: var(--kpi-green-bg); color: var(--kpi-green-text); }
 
 /* Gráficos */
 .charts-container {
@@ -719,7 +725,7 @@ body {
 /* Responsive */
 @media (max-width: 1400px) {
     .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* En pantallas medianas se reorganiza en 3x3 */
     }
 }
 
@@ -756,6 +762,10 @@ body {
     .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    /* El último KPI (#kpi-deven) se expande para centrarse en pantallas de 2 columnas */
+    #kpi-deven {
+        grid-column: span 2;
+    }
     
     .header-branding {
         flex-direction: column;
@@ -781,6 +791,9 @@ body {
 @media (max-width: 480px) {
     .kpi-grid {
         grid-template-columns: 1fr;
+    }
+    #kpi-deven {
+        grid-column: span 1;
     }
 }
 
@@ -929,5 +942,16 @@ body {
 
 .btn-login:hover {
     box-shadow: 0 6px 16px rgba(180, 138, 39, 0.4);
+}
+
+/* Ancho de columna de Incidencias reportadas en la tabla de detalles */
+.data-table th:last-child,
+.data-table td:last-child {
+    min-width: 320px;
+    max-width: 450px;
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 0.7rem;
+    line-height: 1.45;
 }
 

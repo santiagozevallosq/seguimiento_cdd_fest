@@ -193,10 +193,11 @@ function limpiarDatos(rawJson) {
             const pet = (row["pet"] || "Sin PET").toString().trim();
 
             // 3. Limpieza de montos financieros
-            const financ_prog = parseCleanNumber(row["financ_prog"]);
+            const financ_prog = parseCleanNumber(row["financ_prog"] || row["presup_modif"] || row["presup_modifc"] || row["presup_modific"]);
             const financ_cert = parseCleanNumber(row["financ_cert"]);
             const financ_compr = parseCleanNumber(row["financ_compr"]);
-            const financ_deven = parseCleanNumber(row["financ_deven"]);
+            const financ_deven = parseCleanNumber(row["financ_deven"] || row["financ_deven_oa"]);
+            const monto_desemb = parseCleanNumber(row["monto_desemb"] || row["monto_desemb_res"] || row["monto_desembolsado"]);
 
             // 4. Limpieza y transformación de porcentajes
             const fisica_prog = parseCleanNumber(row["fisica_prog"]);
@@ -248,7 +249,8 @@ function limpiarDatos(rawJson) {
                 mma_estado: mma_estado,
                 detalles: detalles,
                 servicio: servicio,
-                up: up
+                up: up,
+                monto_desemb: monto_desemb
             };
         });
 }
@@ -435,6 +437,7 @@ function actualizarKPIs() {
     let totalCert = 0;
     let totalCompr = 0;
     let totalDeven = 0;
+    let totalDesemb = 0;
     let totalReprog = 0;
     let pctCert = 0;
     let pctCompr = 0;
@@ -452,6 +455,7 @@ function actualizarKPIs() {
         totalCert = filteredData.reduce((acc, curr) => acc + curr.financ_cert, 0);
         totalCompr = filteredData.reduce((acc, curr) => acc + curr.financ_compr, 0);
         totalDeven = filteredData.reduce((acc, curr) => acc + curr.financ_deven, 0);
+        totalDesemb = filteredData.reduce((acc, curr) => acc + (curr.monto_desemb || 0), 0);
 
         // Reprogramaciones
         totalReprog = filteredData.filter(d => d.req_reprogr === "Sí").length;
@@ -478,6 +482,7 @@ function actualizarKPIs() {
     document.getElementById("kpi-val-compr-pct").textContent = `${pctCompr.toFixed(1)}%`;
     document.getElementById("kpi-val-deven").textContent = formatearSoles(totalDeven);
     document.getElementById("kpi-val-deven-pct").textContent = `${pctDeven.toFixed(1)}%`;
+    document.getElementById("kpi-val-desemb").textContent = formatearSoles(totalDesemb);
     document.getElementById("kpi-val-reprog").textContent = totalReprog;
 
     // Renderizar nuevos KPIs
